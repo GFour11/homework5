@@ -4,17 +4,17 @@ import re
 
 contacts_list={}
 def input_error(func):
-    def excepter(lst):
+    def excepter(*args):
         try:
-           return func(lst)
+           return func(*args)
         except KeyError:
-            print ('Enter user name')
+            return ('Enter user name')
         except ValueError:
-            print ('Give me name and phone please')
+            return ('Give me name and phone please3')
         except IndexError:
-            print('Give me name and phone please')
+            return ('Give me name and phone please2')
         except TypeError:
-            print ('Give me name and phone please')
+            return ('Give me name and phone please1')
     return excepter
 
 
@@ -54,7 +54,7 @@ def handler(str):
             break
     name_phone=[]
     if command == 'show all':
-        return commands_list[command]
+        return show_all()
     elif command== 'hello':
         return hello()
     else:
@@ -74,17 +74,28 @@ def main():
         if mess == 'exit':
             print('bye')
             break
-        elif mess == 'hello':
-            mess = (commands_list[mess]())
-            print(mess)
-        elif mess == 'show all':
-            mess = (commands_list[mess]())
-            print(mess)
+        res=handler(mess)
+        if type(res) == list and len(res)>0:
+            print(commands_list[res[0]](res))
+        elif type(res) != list:
+            print(res)
         else:
-            res = handler(mess)
-            try:
-                conclusion = commands_list[res[0]](res)
-                if conclusion!= None:
-                    print(conclusion)
-            except IndexError:
-                print('I"m waiting for a command.')
+            print('I"m waiting for a command.')
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    print('This bot create for your contacts list \n'
+          'He can add new contact, change contact number \n'
+           'or show you full list of contacts')
+    print('for doing something print a command then space then contact name space number')
+    print('Bot commands: add - for add contact\n'
+    'change - for change contact number\n'
+    'phone - to know user phone\n'
+    'show all - showed full contacts list\n'
+    'For end print exit')
+    main()
