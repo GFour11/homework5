@@ -1,60 +1,55 @@
 import re
 from collections import UserDict
 
-class AddressBook(UserDict):
-        def add_record(self, record):
-            key = record.name.value
-            self.data[key] = record
-            return self.data
-
 
 class Record():
-    def __init__(self, name, phone):
+    def __init__(self, name, phone=None):
         self.name = name
         self.phone = phone
 
-    def add_phone(self, name, new_phone):
-        if type(self.phone.phone) == str:
-            res=list(self.phone.phone)
+    def add_phone(self, new_phone):
+        if type(self.phone.value)!= list:
+            res=list(self.phone.value)
             res.append(new_phone)
-            ret=Record(name, res)
-            return ret
+            self.phone = res
+            return res
         else:
-            self.phone.phone.append(new_phone)
-            ret=Record(name, self.phone)
+            self.phone.value.append(new_phone)
+            ret=self.phone
             return ret
 
-    def remove(self, name, phone):
-        if self.phone.phone == phone:
-            return None
-        else:
-            self.phone.phone.remove(phone)
-            return Record(name, self.phone)
+    def remove(self, phone):
+        if type(self.phone.value)!=None:
+            if self.phone.value == phone:
+                self.phone.value = None
+                return self.phone
+            else:
+                self.phone.value.remove(phone)
+                return self.phone
 
 
-    def change(self, name, phone, new_phone):
-         if phone in self.phone.phone:
-             self.phone.phone.remove(phone)
-             self.phone.phone.append(new_phone)
-             return Record(name,self.phone)
+    def change(self, phone, new_phone):
+         if phone in self.phone.value:
+             self.phone.value.remove(phone)
+             self.phone.value.append(new_phone)
+             return self.phone
 
-class Field():
-    def __init__(self, name, info):
-        self.name = name
-        self.info = info
+class AddressBook(UserDict):
+    def add_record(self, record: Record):
+        key = record.name.value
+        self.data[key] = record
+        return self.data
+
+
+class Field:
+    def __init__(self, value = None):
+        self.value = value
 
 class Name(Field):
-    def __init__(self, value, info = None):
-        self.value = value
-        super().__init__(value, info)
-
+    pass
 
 class Phone(Field):
-    def __init__(self, phone, info = None):
-        self.phone = phone
-        super().__init__(phone, info)
-
-
+    pass
 
 
 def input_error(func):
@@ -64,11 +59,11 @@ def input_error(func):
         except KeyError:
             return ('Enter user name')
         except ValueError:
-            return ('Give me name and phone please3')
+            return ('Give me name and phone please')
         except IndexError:
-            return ('Give me name and phone please2')
+            return ('Give me name and phone please')
         except TypeError:
-            return ('Give me name and phone please1')
+            return ('Give me name and phone please')
     return excepter
 
 def hello():
@@ -88,17 +83,15 @@ def add_phone(lst):
     name = lst[1].capitalize()
     new_phone=lst[2]
     obj = contacts_list[name]
-    res =obj.add_phone(name, new_phone)
-    contacts_list.update({name:res})
+    obj.add_phone(new_phone)
     return ('I add another phone')
 
 @input_error
 def remove(lst):
     name = lst[1].capitalize()
-    new_phone=lst[2]
+    phone=lst[2]
     obj = contacts_list[name]
-    res =obj.remove(name, new_phone)
-    contacts_list.update({name:res})
+    obj.remove(phone)
     return ('I remove phone')
 
 @input_error
@@ -107,25 +100,26 @@ def change(lst):
     new_phone=lst[3]
     phone = lst[2]
     obj = contacts_list[name]
-    res=obj.change(name, phone,new_phone)
-    contacts_list.update({name: res})
+    obj.change(phone,new_phone)
     return ('I change phone')
 
 def show_all():
     str=''
     for k,v in contacts_list.items():
-        v=v.phone.phone
-        str+=f"{k}:{','.join(v)}\n"
+        v=v.phone.value
+        if len(v)>0:
+            str+=f"{k}:{','.join(v)}\n"
+        else:
+            str += f"{k}:{None}\n"
     return str
-
 
 @input_error
 def phone(lst):
     name = lst[1].capitalize()
-    return (contacts_list[name].phone.phone)
+    return (contacts_list[name].phone.value)
 
 
-commands_list={'append number': add_phone, 'hello': hello, 'add': add, "change": change, 'phone': phone, 'show all': show_all, 'remove':remove}
+commands_list={'append': add_phone, 'hello': hello, 'add': add, "change": change, 'phone': phone, 'show all': show_all, 'remove':remove}
 
 def handler(str):
     command=None
