@@ -5,18 +5,10 @@ from collections import UserDict
 class Record():
     def __init__(self, name, phone=None):
         self.name = name
-        self.phone = phone
+        self.phone = [phone] if phone else []
 
     def add_phone(self, new_phone):
-        if type(self.phone.value)!= list:
-            res=list(self.phone.value)
-            res.append(new_phone)
-            self.phone = res
-            return res
-        else:
-            self.phone.value.append(new_phone)
-            ret=self.phone
-            return ret
+        self.phone.append(new_phone)
 
     def remove(self, phone):
         if type(self.phone.value)!=None:
