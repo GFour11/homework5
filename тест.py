@@ -5,13 +5,15 @@ from datetime import datetime
 class Record():
     def __init__(self, name, phone=None, birthday = None):
         self.name = name
+        self.phone = phone
         self.birthday = birthday
-        self.phone= phone
 
     def add_phone(self, new_phone):
-        new = Phone(new_phone)
-        if len(new.value)>0:
-            self.phone.value.append(new.value)
+        if type(self.phone)!= list:
+            self.phone.value = [self.phone.value]
+            self.phone.value.append(new_phone)
+        else:
+            self.phone.value.append(new_phone)
 
     def remove(self, phone):
         if type(self.phone.value)!=None:
@@ -48,42 +50,11 @@ class Field:
     def __init__(self, value = None):
         self.value = value
 
-
 class Name(Field):
     pass
 
 class Phone(Field):
-    def __init__(self,value):
-        self.__value = []
-        self.value = value
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
-    def value(self,value):
-        print(value)
-        print(type(value))
-        for i in value:
-            if i.isdigit():
-                self.__value.append(i)
-            else:
-                raise ValueError
-
-class Birthday(Field):
-    def __init__(self, value):
-        self.__value = []
-        self.value = value
-
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
-    def value(self, value):
-        year = datetime.now().year
-        if int(value[0])<=year and ( int(value[1]) in range(13)) and (int(value[2]) in range(32)):
-            self.__value = f'{value[0]}-{value[1]}-{value[2]})'
+    pass
 
 
 def input_error(func):
@@ -93,11 +64,11 @@ def input_error(func):
         except KeyError:
             return ('Enter user name')
         except ValueError:
-            return ('Give me name and phone please2')
+            return ('Give me name and phone please')
         except IndexError:
-            return ('Give me name and phone please3')
+            return ('Give me name and phone please')
         except TypeError:
-            return ('Give me name and phone please4')
+            return ('Give me name and phone please')
     return excepter
 
 def hello():
@@ -107,15 +78,8 @@ def hello():
 def add(lst):
     name = lst[1].capitalize()
     name=Name(name)
-    birth=None
-    pattern = re.compile(r'\d{4}-\d{1}-\d{1,2}')
-    matches = (re.findall(pattern, lst[-1]))
-    if len(matches)>0:
-        matches = (re.findall(pattern, lst[-1]))[0]
-        lst.remove(matches)
-        birth=Birthday(matches.split('-'))
     phone = Phone(lst[2:])
-    rec=Record(name,phone, birth)
+    rec=Record(name,phone)
     contacts_list.add_record(rec)
     return('I add contact')
 
@@ -200,35 +164,36 @@ def main():
 
 
 
-user=Name("User")
-phone=Phone(['321312313'])
-birth = Birthday('1999-4-4')
-rec = Record(user,phone, birth)
-ad=AddressBook({user.value:rec})
-print(ad['User'].days_until_birthday())
 
 
 
+if __name__ == '__main__':
+    print('This bot create for your contacts list \n'
+          'He can add new contact, change contact number \n'
+           'or show you full list of contacts')
+    print('for doing something print a command then space then contact name space number')
+    print('Bot commands: add - for add contact\n'
+    'change - for change contact number\n'
+    'phone - to know user phone\n'
+    'show all - showed full contacts list\n'
+    'append - for add new number in contact\n'
+    'remove - for delete contact number\n'
+    'For end print exit')
+    main()
 
+    def value(self,value):
+        for i in value:
+            if i.isdigit():
+                print('yes')
+                self.__value.append(i)
 
-
-
-
-
-# if __name__ == '__main__':
-#     print('This bot create for your contacts list \n'
-#           'He can add new contact, change contact number \n'
-#            'or show you full list of contacts')
-#     print('for doing something print a command then space then contact name space number')
-#     print('Bot commands: add - for add contact\n'
-#     'change - for change contact number\n'
-#     'phone - to know user phone\n'
-#     'show all - showed full contacts list\n'
-#     'append - for add new number in contact\n'
-#     'remove - for delete contact number\n'
-#     'For end print exit')
-#     main()
-
-
-
-
+    def value(self,value):
+        print(type(value))
+        if type(value) == str and value.isdigit():
+            self.__value = value
+        elif type(value) == list:
+            li=[]
+            for i in value:
+                if i.isdigit():
+                    li.append(i)
+            self.__value = li
