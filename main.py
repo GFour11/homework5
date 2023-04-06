@@ -32,7 +32,7 @@ class Record():
              return self.phone
 
     def days_until_birthday(self):
-        if self.birthday.value:
+        if self.birthday:
             today = datetime.now().date()
             birthday = datetime.strptime(self.birthday.value, '%Y-%m-%d').date().replace(year=today.year)
             if birthday < today:
@@ -58,7 +58,10 @@ class AddressBook(UserDict):
             res = list(islice(lst, start, end))
             result = []
             for i in res:
-                result.append(f'Name:{i}; phones: {obj[i].phone.value}; Date of birth :{obj[i].birthday.value}.')
+                if obj[i].birthday:
+                    result.append(f'Name:{i}; phones: {obj[i].phone.value}; Date of birth :{obj[i].birthday.value}.')
+                else:
+                    result.append(f'Name:{i}; phones: {obj[i].phone.value}')
             start += step
             end += step
             count -= step
@@ -137,14 +140,14 @@ def hello():
 def add(lst):
     name = lst[1].capitalize()
     name=Name(name)
-    birth=Birthday([1,1,1])
+    birth=None
     pattern = re.compile(r'\d{4}-\d{1}-\d{1,2}')
     matches = (re.findall(pattern, lst[-1]))
     if len(matches)>0:
         matches = (re.findall(pattern, lst[-1]))[0]
         lst.remove(matches)
-        f=matches.split('-')
-        birth=Birthday(f)
+        match=matches.split('-')
+        birth=Birthday(match)
     phone = Phone(lst[2:])
     rec=Record(name,phone, birth)
     contacts_list.add_record(rec)
