@@ -8,28 +8,26 @@ class Record():
     def __init__(self, name, phone=None, birthday = None):
         self.name = name
         self.birthday = birthday
-        self.phone= phone
+        self.phones= phone
 
     def add_phone(self, new_phone):
-        new = Phone(new_phone)
-        if len(new.value)>0:
-            self.phone.value.append(new.value)
+            self.phones.value.append(new_phone)
 
     def remove(self, phone):
-        if type(self.phone.value)!=None:
-            if self.phone.value == phone:
-                self.phone.value = None
-                return self.phone
+        if type(self.phones.value)!=None:
+            if self.phones.value == phone:
+                self.phones.value = None
+                return self.phones
             else:
-                self.phone.value.remove(phone)
-                return self.phone
+                self.phones.value.remove(phone)
+                return self.phones
 
 
     def change(self, phone, new_phone):
-         if phone in self.phone.value:
-             self.phone.value.remove(phone)
-             self.phone.value.append(new_phone)
-             return self.phone
+         if phone in self.phones.value:
+             self.phones.value.remove(phone)
+             self.phones.value.append(new_phone)
+             return self.phones
 
     def days_until_birthday(self):
         if self.birthday:
@@ -59,9 +57,9 @@ class AddressBook(UserDict):
             result = []
             for i in res:
                 if obj[i].birthday:
-                    result.append(f'Name:{i}; phones: {obj[i].phone.value}; Date of birth :{obj[i].birthday.value}.')
+                    result.append(f'Name:{i}; phones: {obj[i].phones.value}; Date of birth :{obj[i].birthday.value}.')
                 else:
-                    result.append(f'Name:{i}; phones: {obj[i].phone.value}')
+                    result.append(f'Name:{i}; phones: {obj[i].phones.value}')
             start += step
             end += step
             count -= step
