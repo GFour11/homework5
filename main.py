@@ -2,6 +2,8 @@ import re
 from collections import UserDict
 from datetime import datetime
 from itertools import islice
+import pickle
+import os
 
 
 class Record():
@@ -183,17 +185,35 @@ def show_all(lst):
     for i in gen_obj:
         print(i)
         input('Press any button for next contacts')
-
+    return "That's all contacts"
 
 @input_error
 def phone(lst):
     name = lst[1].capitalize()
-    return (contacts_list[name].phone.value)
+    return (contacts_list[name].phones.value)
 
 @input_error
 def birthday(lst):
      name = lst[1].capitalize()
      return  contacts_list[name].days_until_birthday()
+
+@input_error
+def search_line(contact_list: dict , request):
+    if len(request)==0:
+        return 'I"m waiting for a command.'
+    request=request.capitalize()
+    result = []
+    for key, value in contact_list.items():
+        res_k = re.findall(request, key)
+        res_v = re.findall(request, ' '.join(value.phones.value))
+        if len(res_k)>0 or len(res_v)>0:
+            result.append(f'{key}:{",".join(value.phones.value)}')
+    if len(result)>0:
+        return  '\n'.join(result)
+    else:
+        return 'I"m waiting for a command.'
+
+
 
 
 commands_list={'append': add_phone, 'hello': hello, 'add': add, "change": change, 'phone': phone, 'show': show_all, 'remove':remove, 'birthday': birthday}
@@ -220,7 +240,7 @@ def handler(str):
         return name_phone
 
 
-contacts_list = AddressBook()
+contacts_list = None
 def main():
     while True:
         mess = input('>>> ').lower()
@@ -232,8 +252,24 @@ def main():
             print(commands_list[res[0]](res))
         elif type(res) != list:
             print(res)
-        else:
-            print('I"m waiting for a command.')
+        elif res==[]:
+            print(search_line(contacts_list, mess))
+
+def save_in_file(adress_book):
+    if os.path.isfile('data.bin'):
+        with open('data.bin', 'wb') as fh:
+            pickle.dump(adress_book,fh)
+    else:
+        with open('data.bin', 'wb') as fh:
+            pickle.dump(adress_book,fh)
+
+
+
+if os.path.isfile('data.bin'):
+    with open('data.bin', 'rb') as fh:
+        contacts_list = pickle.load(fh)
+else:
+    contacts_list = AddressBook()
 
 
 
@@ -250,7 +286,7 @@ if __name__ == '__main__':
     'remove - for delete contact number\n'
     'For end print exit')
     main()
-
+    save_in_file(contacts_list)
 
 
 
