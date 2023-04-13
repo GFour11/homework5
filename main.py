@@ -67,6 +67,22 @@ class AddressBook(UserDict):
             count -= step
             yield '\n'.join(result)
 
+    def save_in_file(self):
+        if os.path.isfile('data.bin'):
+            with open('data.bin', 'wb') as fh:
+                pickle.dump(self, fh)
+        else:
+            with open('data.bin', 'wb') as fh:
+                pickle.dump(self, fh)
+
+
+    @staticmethod
+    def open_from_file():
+        if os.path.isfile('data.bin'):
+            with open('data.bin', 'rb') as fh:
+                return pickle.load(fh)
+        else:
+            return AddressBook()
 
 class Field:
     def __init__(self, value = None):
@@ -240,11 +256,12 @@ def handler(str):
         return name_phone
 
 
-contacts_list = None
+contacts_list = AddressBook.open_from_file()
 def main():
     while True:
         mess = input('>>> ').lower()
         if mess == 'exit':
+            contacts_list.save_in_file()
             print('bye')
             break
         res=handler(mess)
@@ -254,22 +271,6 @@ def main():
             print(res)
         elif res==[]:
             print(search_line(contacts_list, mess))
-
-def save_in_file(adress_book):
-    if os.path.isfile('data.bin'):
-        with open('data.bin', 'wb') as fh:
-            pickle.dump(adress_book,fh)
-    else:
-        with open('data.bin', 'wb') as fh:
-            pickle.dump(adress_book,fh)
-
-
-
-if os.path.isfile('data.bin'):
-    with open('data.bin', 'rb') as fh:
-        contacts_list = pickle.load(fh)
-else:
-    contacts_list = AddressBook()
 
 
 
@@ -286,7 +287,7 @@ if __name__ == '__main__':
     'remove - for delete contact number\n'
     'For end print exit')
     main()
-    save_in_file(contacts_list)
+
 
 
 
